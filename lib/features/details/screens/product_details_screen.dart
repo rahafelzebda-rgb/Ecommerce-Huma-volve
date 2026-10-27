@@ -1,14 +1,15 @@
-import 'package:ecommerce_app_huma_volve/features/home/service/models/product_model.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/entites/home_product_entity.dart';
 import 'package:flutter/material.dart';
 import '../../../core/dummy_data.dart';
 import '../../../core/theme.dart';
+import '../../home/data/models/product_model.dart';
 import '../widgets/color_selector.dart';
 import '../widgets/size_selector.dart';
 import '../../../core/widgets/primary_button.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   //final Product product;
-  final  Products_model products_model;
+  final  HomeProductEntity products_model;
 
   const ProductDetailsScreen({super.key, required this.products_model});
 
