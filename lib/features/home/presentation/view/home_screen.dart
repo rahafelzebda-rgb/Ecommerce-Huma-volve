@@ -1,12 +1,12 @@
-import 'package:ecommerce_app_huma_volve/features/home/cubit/home_cubit.dart';
-import 'package:ecommerce_app_huma_volve/features/home/cubit/home_states.dart';
-import 'package:ecommerce_app_huma_volve/features/home/screens/widgets/category_chip.dart';
-import 'package:ecommerce_app_huma_volve/features/home/screens/widgets/product_card.dart';
+import 'package:ecommerce_app_huma_volve/features/home/presentation/view/widgets/category_chip.dart';
+import 'package:ecommerce_app_huma_volve/features/home/presentation/view/widgets/product_card.dart';
+import 'package:ecommerce_app_huma_volve/features/home/presentation/view_model/home_cubit.dart';
+import 'package:ecommerce_app_huma_volve/features/home/presentation/view_model/home_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/dummy_data.dart';
-import '../../../core/theme.dart';
+import '../../../../core/dummy_data.dart';
+import '../../../../core/theme.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -144,12 +144,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                separatorBuilder: (context, index) =>
                                const SizedBox(width: 12),
                              itemBuilder: (context, index) {
+                              final category=categories[index];
                                  return CategoryChip(
-                             label: categories[index].name??"all",
+                             label: category.title??"all",
                              isSelected: _selectedCategoryIndex == index,
                         onTap: () {
                         setState(() {
-                        _selectedCategoryIndex = index;});},);},),);
+                        _selectedCategoryIndex = index;});
+                        context.read <HomeCubit>().getProductsByCategoryId(category.id!);
+                        },);},),);
 
                       }else{return  SizedBox.shrink();}
 
@@ -163,9 +166,9 @@ class _HomeScreenState extends State<HomeScreen> {
             BlocBuilder<HomeCubit , HomeStates>(
               builder: (BuildContext context, HomeStates state) {
                 if (state is ProductsLoading){
-                  return Center(child: CircularProgressIndicator());
+                  return SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
                 }else if (state is ProductsError){
-                  return Center(child: Text(state.errorMessage));
+                  return SliverToBoxAdapter(child: Center(child: Text(state.errorMessage)));
                 }else if (state is ProductsSuccess){
                   final products =state.products;
                   return SliverPadding(
@@ -179,12 +182,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       delegate: SliverChildBuilderDelegate((context, index) {
                         return ProductCard(products_model: products[index]  );
-                      }, childCount: dummyProducts.length),
+                      }, childCount: products.length),
                     ),
                   );
                 }
                 else {
-                  return SizedBox.shrink();
+                  return SliverToBoxAdapter(child: SizedBox.shrink());
                 }
               }
 
